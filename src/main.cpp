@@ -16,11 +16,6 @@
 #include "ui.h"
 #include "gfx/splash.h"
 
-// TODO: write first boot screen
-// TODO: state saving
-// TODO: write apps
-// TODO: find a better way for a todo list
-
 int main(void) {
   // --- init subsystems ---
   gfx_Begin();

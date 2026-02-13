@@ -314,10 +314,7 @@ namespace ui {
 
   // --- desktop (home screen behind dock) ---
 
-  // TODO: write function to darken background or blur it instead of replacing it as if ui was on top, make calculator launch automatically
-
   static void draw_desktop() {
-    // TODO: make this show image instead of gradient
     // simple gradient-ish background
     for (int y = STATUS_H; y < DOCK_Y; y++) {
       // dark blue to slightly lighter blue

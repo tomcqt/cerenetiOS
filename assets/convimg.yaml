@@ -1,0 +1,26 @@
+palettes:
+  - name: splash_palette
+    images: automatic
+
+converts:
+  - name: splash_gen
+    palette: splash_palette
+    width-and-height: false
+    images:
+      - assets/images/splash.png
+  - name: icons
+    palette: xlibc
+    images:
+      - assets/images/icons/*
+
+outputs:
+  - type: c
+    include-file: splash_gfx.h
+    palettes:
+      - splash_palette
+    converts:
+      - splash_gen
+  - type: c
+    include-file: icons.h
+    converts:
+      - icons

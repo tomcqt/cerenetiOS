@@ -4,7 +4,7 @@
 
 #include <cstdio>
 
-namespace hal::power {
+namespace hal::Power {
   bool charging() {
     return (boot_BatteryCharging() != 0);
   }

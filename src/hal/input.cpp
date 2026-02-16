@@ -1,7 +1,7 @@
 #include "hal/input.h"
 #include <cstring>
 
-namespace hal::input {
+namespace hal::Input {
   // kb_Data has 8 groups (indices 0-7)
   static uint8_t prev_state[8];
   static uint8_t curr_state[8];

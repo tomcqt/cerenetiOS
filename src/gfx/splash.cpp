@@ -12,7 +12,7 @@
 
 static constexpr uint32_t SPLASH_TIMEOUT_SEC = 3;
 
-namespace gfx::splash {
+namespace gfx::Splash {
   void show() {
     // apply the converted palette
     gfx_SetPalette(splash_palette, sizeof_splash_palette, 0);
@@ -35,12 +35,9 @@ namespace gfx::splash {
       }
 
       uint32_t elapsed = timer_GetSafe(1, TIMER_UP) - start;
-      if (elapsed >= SPLASH_TIMEOUT_SEC)
+      if (elapsed >= SPLASH_TIMEOUT_SEC * 32767u)
         dismissed = true;
     }
-
-    // switch to double-buffered mode for the main loop
-    gfx_SetDrawBuffer();
 
     // reset palette
     gfx_SetDefaultPalette(gfx_8bpp);

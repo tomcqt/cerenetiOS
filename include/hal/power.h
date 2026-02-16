@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-namespace hal::power {
+namespace hal::Power {
   uint16_t voltage_mv();
   int percent();
   bool charging();

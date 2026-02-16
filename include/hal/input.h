@@ -4,7 +4,7 @@
 #include <keypadc.h>
 #include <cstdint>
 
-namespace hal::input {
+namespace hal::Input {
 
   void init();
   void update();

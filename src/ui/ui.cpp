@@ -1,4 +1,4 @@
-#include "ui.h"
+#include "ui/ui.h"
 #include "gfx/gfx.h"
 #include "hal/input.h"
 #include "config.h"
@@ -83,6 +83,9 @@ namespace ui {
   static int grid_page_count() {
     return (APP_COUNT + GRID_PER_PAGE - 1) / GRID_PER_PAGE;
   }
+
+  static int selected_app = -1; // -1 = no selection
+  static bool was_dismissed = false;
 
   // --- drawing helpers ---
 
@@ -187,7 +190,7 @@ namespace ui {
 
     // battery
     char battery_value[4];
-    snprintf(battery_value, sizeof(battery_value), "%d", hal::power::percent());
+    snprintf(battery_value, sizeof(battery_value), "%d", hal::Power::percent());
     strcat(battery_value, "%");
     gfx::draw_text(battery_value, SCREEN_W - 28, 2, gfx::Color::LightGray);
   }
@@ -315,32 +318,30 @@ namespace ui {
   // --- desktop (home screen behind dock) ---
 
   static void draw_desktop() {
-    // simple gradient-ish background
-    for (int y = STATUS_H; y < DOCK_Y; y++) {
-      // dark blue to slightly lighter blue
-      uint8_t shade = (uint8_t)(0x10 + (y - STATUS_H) * 0x08 / (DOCK_Y - STATUS_H));
-      gfx_SetColor(shade);
-      gfx_HorizLine(0, y, SCREEN_W);
-    }
+    // overlay is drawn, dont do anything
   }
 
   // --- update ---
 
   static void update_home() {
-    if (hal::input::key_left() && dock_sel > 0)
+    if (hal::Input::key_left() && dock_sel > 0)
       dock_sel--;
-    if (hal::input::key_right() && dock_sel < DOCK_SLOTS - 1)
+    if (hal::Input::key_right() && dock_sel < DOCK_SLOTS - 1)
       dock_sel++;
 
-    if (hal::input::key_enter() || hal::input::key_2nd()) {
+    if (hal::Input::key_enter() || hal::Input::key_2nd()) {
       if (dock_sel == PINNED_COUNT) {
         // open launcher
         current_screen = Screen::Launcher;
         grid_sel = 0;
         grid_page = 0;
       } else {
-        // TODO: launch pinned app all_apps[pinned[dock_sel]]
+        selected_app = pinned[dock_sel];
       }
+    }
+
+    if (hal::Input::key_clear()) {
+      was_dismissed = true;
     }
   }
 
@@ -348,7 +349,7 @@ namespace ui {
     int col = grid_sel % GRID_COLS;
     int row = grid_sel / GRID_COLS;
 
-    if (hal::input::key_left()) {
+    if (hal::Input::key_left()) {
       if (col > 0)
         grid_sel--;
       else if (grid_page > 0) {
@@ -361,7 +362,7 @@ namespace ui {
       }
     }
 
-    if (hal::input::key_right()) {
+    if (hal::Input::key_right()) {
       int next_app = grid_page * GRID_PER_PAGE + grid_sel + 1;
       if (col < GRID_COLS - 1 && next_app < APP_COUNT)
         grid_sel++;
@@ -374,26 +375,29 @@ namespace ui {
         }
     }
 
-    if (hal::input::key_up() && row > 0) {
+    if (hal::Input::key_up() && row > 0) {
       grid_sel -= GRID_COLS;
     }
 
-    if (hal::input::key_down()) {
+    if (hal::Input::key_down()) {
       int next = grid_sel + GRID_COLS;
       int next_app = grid_page * GRID_PER_PAGE + next;
       if (next < GRID_PER_PAGE && next_app < APP_COUNT)
         grid_sel = next;
     }
 
-    if (hal::input::key_enter() || hal::input::key_2nd()) {
+    if (hal::Input::key_enter() || hal::Input::key_2nd()) {
       int app_idx = grid_page * GRID_PER_PAGE + grid_sel;
       if (app_idx < APP_COUNT) {
-        // TODO: launch all_apps[app_idx]
+        selected_app = app_idx;
       }
     }
 
-    if (hal::input::key_clear()) {
-      current_screen = Screen::Home;
+    if (hal::Input::key_clear()) {
+      if (current_screen == Screen::Launcher)
+        current_screen = Screen::Home;
+      else
+        was_dismissed = true;
     }
   }
 
@@ -404,6 +408,8 @@ namespace ui {
     dock_sel = 0;
     grid_sel = 0;
     grid_page = 0;
+    selected_app = -1;
+    was_dismissed = false;
   }
 
   void update() {
@@ -421,5 +427,13 @@ namespace ui {
       draw_launcher();
 
     draw_dock();
+  }
+
+  int get_selected_app() {
+    return selected_app;
+  }
+
+  bool dismissed() {
+    return was_dismissed;
   }
 }

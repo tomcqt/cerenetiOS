@@ -178,7 +178,7 @@ namespace ui {
     gfx::draw_rect_filled(0, 0, GFX_LCD_WIDTH, STATUS_H, gfx::Color::DarkGray);
 
     // os name
-    gfx::draw_text("sCEne", 4, 2, gfx::Color::White);
+    gfx::draw_text("cerenetiOS", 4, 2, gfx::Color::White);
 
     // time
     char time_buf[16];

@@ -1,12 +1,12 @@
 # ===============================
-#             sCEne
+#           cerenetiOS
 # ===============================
 
 # ----------------------------
 # makefile options
 # ----------------------------
 
-NAME        = sCEne
+NAME        = cereneti
 ICON        = icon.png
 DESCRIPTION = "Full operating system replacement for the TI-84 Plus CE graphing calculator, written in C++."
 COMPRESSED  = YES

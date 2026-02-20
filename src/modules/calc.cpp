@@ -1,7 +1,6 @@
 #include "modules/calc.h"
 #include "gfx/gfx.h"
 #include "hal/input.h"
-#include "config.h"
 
 #include <graphx.h>
 #include <keypadc.h>
@@ -19,8 +18,8 @@ static constexpr int LINE_H      = 22;
 static constexpr int MARGIN_X    = 6;
 static constexpr int MAX_EXPR    = 64;
 static constexpr int MAX_HISTORY = 8;
-static constexpr int PREVIEW_Y   = SCREEN_H - 16;
-static constexpr int INPUT_Y     = SCREEN_H - 34;
+static constexpr int PREVIEW_Y   = GFX_LCD_HEIGHT - 16;
+static constexpr int INPUT_Y     = GFX_LCD_HEIGHT - 34;
 
 // --- history entry ---
 
@@ -247,9 +246,9 @@ static void poll_keys() {
 // --- drawing ---
 
 static void draw_top_bar() {
-  gfx::draw_rect_filled(0, 0, SCREEN_W, TOP_BAR_H, 0x4A);
+  gfx::draw_rect_filled(0, 0, GFX_LCD_WIDTH, TOP_BAR_H, 0x4A);
   gfx::draw_text("Calculator", 4, 2, gfx::Color::White);
-  gfx::draw_text("[clear] exit", SCREEN_W - 100, 2, gfx::Color::DarkGray);
+  gfx::draw_text("[clear] exit", GFX_LCD_WIDTH - 100, 2, gfx::Color::DarkGray);
 }
 
 static void draw_history() {
@@ -270,13 +269,13 @@ static void draw_history() {
 
     // result (r-align, next line)
     int result_w = (int)strlen(history[idx].result) * 8;
-    int result_x = SCREEN_W - MARGIN_X - result_w;
+    int result_x = GFX_LCD_WIDTH - MARGIN_X - result_w;
     gfx::draw_text(history[idx].result, result_x, y + LINE_H, gfx::Color::Black);
   }
 }
 
 static void draw_input_line() {
-  gfx::draw_rect_filled(0, INPUT_Y - 2, SCREEN_W, 18, gfx::Color::White);
+  gfx::draw_rect_filled(0, INPUT_Y - 2, GFX_LCD_WIDTH, 18, gfx::Color::White);
 
   gfx::draw_text(input_buf, MARGIN_X, INPUT_Y, gfx::Color::Black);
 
@@ -299,7 +298,7 @@ static void draw_preview() {
     format_result(result, buf, MAX_EXPR);
 
     int result_w = (int)strlen(buf) * 8;
-    int result_x = SCREEN_W - MARGIN_X - result_w;
+    int result_x = GFX_LCD_WIDTH - MARGIN_X - result_w;
 
     gfx::draw_text(buf, result_x, PREVIEW_Y, gfx::Color::LightGray);
   }
@@ -309,7 +308,7 @@ static void draw_preview() {
 
 static void draw_separator() {
   gfx_SetColor(gfx::Color::DarkGray);
-  gfx_HorizLine(MARGIN_X, INPUT_Y - 4, SCREEN_W - MARGIN_X * 2);
+  gfx_HorizLine(MARGIN_X, INPUT_Y - 4, GFX_LCD_WIDTH - MARGIN_X * 2);
 }
 
 // --- public interface ---

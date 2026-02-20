@@ -1,13 +1,12 @@
 #include "gfx/gfx.h"
 #include "gfx/fonts.h"
-#include "config.h"
 
 #include <fontlibc.h>
 
 namespace gfx {
   void init() {
     // load fontlibc and custom smallfont
-    fontlib_SetWindow(0, 0, SCREEN_W, SCREEN_H);
+    fontlib_SetWindow(0, 0, GFX_LCD_WIDTH, GFX_LCD_HEIGHT);
     fontlib_SetTransparency(true);
     fontlib_SetLineSpacing(0, 0);
   }

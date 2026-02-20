@@ -1,7 +1,6 @@
 #include "ui/ui.h"
 #include "gfx/gfx.h"
 #include "hal/input.h"
-#include "config.h"
 #include "gfx/colors.h"
 #include "images/icons.h"
 #include "hal/power.h"
@@ -22,7 +21,7 @@ namespace ui {
 
   // dock
   static constexpr int DOCK_H         = 38;
-  static constexpr int DOCK_Y         = SCREEN_H - DOCK_H;
+  static constexpr int DOCK_Y         = GFX_LCD_HEIGHT - DOCK_H;
   static constexpr int DOCK_MARGIN    = 4;
   static constexpr int DOCK_ICON_SIZE = 28;
   static constexpr int DOCK_PADDING   = 6;
@@ -115,7 +114,7 @@ namespace ui {
   // draw a rounded-looking rectangle (aproximated with filled_rect & edge pixels)
   static void draw_dock_bg() {
     int dock_content_w = DOCK_SLOTS * (DOCK_ICON_SIZE + DOCK_PADDING) + DOCK_PADDING;
-    int dock_x = (SCREEN_W - dock_content_w) / 2;
+    int dock_x = (GFX_LCD_WIDTH - dock_content_w) / 2;
     int r = DOCK_RADIUS;
 
     // shadow
@@ -176,7 +175,7 @@ namespace ui {
 
   static void draw_status_bar() {
     // background
-    gfx::draw_rect_filled(0, 0, SCREEN_W, STATUS_H, gfx::Color::DarkGray);
+    gfx::draw_rect_filled(0, 0, GFX_LCD_WIDTH, STATUS_H, gfx::Color::DarkGray);
 
     // os name
     gfx::draw_text("sCEne", 4, 2, gfx::Color::White);
@@ -186,20 +185,20 @@ namespace ui {
     uint8_t h = rtc_Hours;
     uint8_t m = rtc_Minutes;
     snprintf(time_buf, sizeof(time_buf), "%02u:%02u", (unsigned)h, (unsigned)m);
-    gfx::draw_text(time_buf, SCREEN_W / 2 - 12, 2, gfx::Color::White);
+    gfx::draw_text(time_buf, GFX_LCD_WIDTH / 2 - 12, 2, gfx::Color::White);
 
     // battery
     char battery_value[4];
     snprintf(battery_value, sizeof(battery_value), "%d", hal::Power::percent());
     strcat(battery_value, "%");
-    gfx::draw_text(battery_value, SCREEN_W - 28, 2, gfx::Color::LightGray);
+    gfx::draw_text(battery_value, GFX_LCD_WIDTH - 28, 2, gfx::Color::LightGray);
   }
 
   // --- dock ---
 
   static int dock_icon_x(int slot) {
     int dock_content_w = DOCK_SLOTS * (DOCK_ICON_SIZE + DOCK_PADDING) + DOCK_PADDING;
-    int dock_x = (SCREEN_W - dock_content_w) / 2;
+    int dock_x = (GFX_LCD_WIDTH - dock_content_w) / 2;
     return dock_x + DOCK_PADDING + slot * (DOCK_ICON_SIZE + DOCK_PADDING) + DOCK_ICON_SIZE / 2;
   }
 
@@ -252,7 +251,7 @@ namespace ui {
     // tooltip for selected app
     if (hovered_name != nullptr) {
       int label_w = fontlib_GetStringWidth(hovered_name) + 4;
-      int label_x = (SCREEN_W - label_w) / 2;
+      int label_x = (GFX_LCD_WIDTH - label_w) / 2;
       int label_y = DOCK_Y - 17;
 
       // tooltip background
@@ -270,13 +269,13 @@ namespace ui {
 
   static void draw_launcher() {
     // dimmed background overlay
-    gfx::draw_rect_filled(0, STATUS_H, SCREEN_W, SCREEN_H - STATUS_H - DOCK_H, 0x08);
+    gfx::draw_rect_filled(0, STATUS_H, GFX_LCD_WIDTH, GFX_LCD_HEIGHT - STATUS_H - DOCK_H, 0x08);
 
     int start = grid_page * GRID_PER_PAGE;
     int cell_w = GRID_ICON_SIZE + GRID_SPACING_X;
     int cell_h = GRID_ICON_SIZE + GRID_LABEL_H + GRID_SPACING_Y;
     int grid_w = GRID_COLS * cell_w - GRID_SPACING_X;
-    int base_x = (SCREEN_W - grid_w) / 2;
+    int base_x = (GFX_LCD_WIDTH - grid_w) / 2;
     int base_y = GRID_TOP;
 
     for (int i = 0; i < GRID_PER_PAGE; i++) {
@@ -304,9 +303,9 @@ namespace ui {
     // page indicator dots
     int pages = grid_page_count();
     if (pages > 1) {
-      int dot_y = SCREEN_H - DOCK_H - 10;
+      int dot_y = GFX_LCD_HEIGHT - DOCK_H - 10;
       int dots_w = pages * 8;
-      int dot_x = (SCREEN_W - dots_w) / 2;
+      int dot_x = (GFX_LCD_WIDTH - dots_w) / 2;
 
       for (int p = 0; p < pages; p++) {
         gfx_SetColor(p == grid_page ? gfx::Color::White : gfx::Color::DarkGray);

@@ -5,7 +5,8 @@
 #include <cstdint>
 
 namespace ui::Overlay {
-  void draw_dimmed();
+  void capture();
+  void draw();
 }
 
 #endif

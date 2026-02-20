@@ -90,6 +90,7 @@ int main(void) {
         if (app_registry[current_app] != nullptr)
           app_registry[current_app] -> tick();
         gfx_SwapDraw();
+        ui::Overlay::capture();
 
         ui::init();
         overlay_active = true;
@@ -123,7 +124,7 @@ int main(void) {
       }
 
       // draw dimmed background + overlay ui
-      ui::Overlay::draw_dimmed();
+      ui::Overlay::draw();
       ui::draw();
       gfx_SwapDraw();
     } else {
